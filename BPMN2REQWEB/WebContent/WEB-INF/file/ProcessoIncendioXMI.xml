@@ -1,0 +1,119 @@
+<?xml version="1.0" standalone="no"  ?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://sourceforge.net/bpmn/definitions/_1419237461760" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:yaoqiang="http://bpmn.sourceforge.net" exporter="" exporterVersion="2.2.5 (GPLv3, Non-Commercial)" expressionLanguage="http://www.w3.org/1999/XPath" id="_1419237461760" name="" targetNamespace="http://sourceforge.net/bpmn/definitions/_1419237461760" typeLanguage="http://www.omg.org/spec/BPMN/20100524/MODEL http://bpmn.sourceforge.net/schemas/BPMN20.xsd">
+	<collaboration id="COLLABORATION__20" isClosed="false">
+		<participant id="_20" name="ControlRoomOperator">
+			<participantMultiplicity maximum="1" minimum="0" />
+		</participant>
+		<messageFlow id="_22" sourceRef="_20" targetRef="_21" />
+	</collaboration>
+	<process id="PROCESS_0" isClosed="false" isExecutable="true" processType="None">
+		<startEvent id="_0">
+			<outgoing>_42</outgoing>
+		</startEvent>
+		<parallelGateway id="_1" />
+		<task completionQuantity="1" id="_2" isForCompensation="false" name="assessbuildingusability" startQuantity="1">
+			<incoming>_6</incoming>
+			<outgoing>_10</outgoing>
+		</task>
+		<task completionQuantity="1" id="_3" isForCompensation="false" name="assessexplosionhazard" startQuantity="1">
+			<incoming>_7</incoming>
+			<outgoing>_9</outgoing>
+		</task>
+		<task completionQuantity="1" id="_4" isForCompensation="false" name="assessfirehazard" startQuantity="1">
+			<incoming>_8</incoming>
+			<outgoing>_11</outgoing>
+		</task>
+		<parallelGateway id="_5" />
+		<task completionQuantity="1" id="_12" isForCompensation="false" name="reportemergencysituation" startQuantity="1">
+			<incoming>_16</incoming>
+			<outgoing>_14</outgoing>
+		</task>
+		<exclusiveGateway id="_13" />
+		<parallelGateway id="_15" />
+		<task completionQuantity="1" id="_18" isForCompensation="false" name="callfirefighter" startQuantity="1">
+			<incoming>_19</incoming>
+			<outgoing>_28</outgoing>
+		</task>
+		<intermediateThrowEvent id="_21">
+			<outgoing>_40</outgoing>
+			<messageEventDefinition id="_21_ED_1" />
+		</intermediateThrowEvent>
+		<task completionQuantity="1" id="_23" isForCompensation="false" name="delimitdangerousarea" startQuantity="1">
+			<incoming>_27</incoming>
+			<outgoing>_29</outgoing>
+		</task>
+		<task completionQuantity="1" id="_24" isForCompensation="false" name="closegaspipeline" startQuantity="1">
+			<incoming>_25</incoming>
+			<outgoing>_30</outgoing>
+		</task>
+		<parallelGateway id="_26" />
+		<exclusiveGateway id="_31" />
+		<task completionQuantity="1" id="_34" isForCompensation="false" name="evaluateinjured" startQuantity="1">
+			<incoming>_35</incoming>
+			<outgoing>_37</outgoing>
+		</task>
+		<exclusiveGateway id="_36" />
+		<task completionQuantity="1" id="_38" isForCompensation="false" name="callambulance" startQuantity="1">
+			<incoming>_49</incoming>
+			<outgoing>_44</outgoing>
+		</task>
+		<task completionQuantity="1" id="_39" isForCompensation="false" name="policerequest" startQuantity="1">
+			<incoming>_40</incoming>
+			<incoming>_42</incoming>
+			<outgoing>_41</outgoing>
+		</task>
+		<task completionQuantity="1" id="_43" isForCompensation="false" name="ambulancerequestn" startQuantity="1">
+			<incoming>_44</incoming>
+			<outgoing>_46</outgoing>
+		</task>
+		<task completionQuantity="1" id="_45" isForCompensation="false" name="secureinjured" startQuantity="1">
+			<incoming>_46</incoming>
+			<outgoing>_48</outgoing>
+		</task>
+		<exclusiveGateway id="_47" />
+		<task completionQuantity="1" id="_51" isForCompensation="false" name="notifyinterventionearthquakeconclusion" startQuantity="1">
+			<incoming>_52</incoming>
+			<outgoing>_54</outgoing>
+		</task>
+		<endEvent id="_53">
+			<incoming>_54</incoming>
+		</endEvent>
+		<sequenceFlow id="_6" sourceRef="_1" targetRef="_2" />
+		<sequenceFlow id="_7" sourceRef="_1" targetRef="_3" />
+		<sequenceFlow id="_8" sourceRef="_1" targetRef="_4" />
+		<sequenceFlow id="_9" sourceRef="_3" targetRef="_5" />
+		<sequenceFlow id="_10" sourceRef="_2" targetRef="_5" />
+		<sequenceFlow id="_11" sourceRef="_4" targetRef="_5" />
+		<sequenceFlow id="_14" sourceRef="_12" targetRef="_13" />
+		<sequenceFlow id="_16" sourceRef="_5" targetRef="_12" />
+		<sequenceFlow id="_17" sourceRef="_13" targetRef="_15">
+			<conditionExpression>yes</conditionExpression>
+		</sequenceFlow>
+		<sequenceFlow id="_19" sourceRef="_15" targetRef="_18" />
+		<sequenceFlow id="_25" sourceRef="_15" targetRef="_24" />
+		<sequenceFlow id="_27" sourceRef="_15" targetRef="_23" />
+		<sequenceFlow id="_28" sourceRef="_18" targetRef="_26" />
+		<sequenceFlow id="_29" sourceRef="_23" targetRef="_26" />
+		<sequenceFlow id="_30" sourceRef="_24" targetRef="_26" />
+		<sequenceFlow id="_32" sourceRef="_13" targetRef="_31">
+			<conditionExpression>No</conditionExpression>
+		</sequenceFlow>
+		<sequenceFlow id="_33" sourceRef="_26" targetRef="_31" />
+		<sequenceFlow id="_35" sourceRef="_31" targetRef="_34" />
+		<sequenceFlow id="_37" sourceRef="_34" targetRef="_36" />
+		<sequenceFlow id="_40" sourceRef="_21" targetRef="_39" />
+		<sequenceFlow id="_41" sourceRef="_39" targetRef="_1" />
+		<sequenceFlow id="_42" sourceRef="_0" targetRef="_39" />
+		<sequenceFlow id="_44" sourceRef="_38" targetRef="_43" />
+		<sequenceFlow id="_46" sourceRef="_43" targetRef="_45" />
+		<sequenceFlow id="_48" sourceRef="_45" targetRef="_47" />
+		<sequenceFlow id="_49" sourceRef="_36" targetRef="_38">
+			<conditionExpression>yes</conditionExpression>
+		</sequenceFlow>
+		<sequenceFlow id="_50" sourceRef="_36" targetRef="_47">
+			<conditionExpression>No</conditionExpression>
+		</sequenceFlow>
+		<sequenceFlow id="_52" sourceRef="_47" targetRef="_51" />
+		<sequenceFlow id="_54" sourceRef="_51" targetRef="_53" />
+	</process>
+</definitions>

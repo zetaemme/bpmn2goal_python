@@ -1,0 +1,6 @@
+package ids.tx.bpmn;
+
+public enum BPMNEventDefinitionType
+{
+	LINK,MESSAGE,SIGNAL,TERMINATE,TIMER,CANCEL,COMPENSATE,CONDITIONAL,ERROR,ESCALATION
+}
