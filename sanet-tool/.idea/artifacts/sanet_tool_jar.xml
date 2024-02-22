@@ -1,9 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="sanet-tool:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/sanet_tool_jar</output-path>
-    <root id="archive" name="sanet-tool.jar">
-      <element id="module-output" name="sanet-tool-build" />
-      <element id="module-output" name="sanet-tool" />
-    </root>
-  </artifact>
-</component>
