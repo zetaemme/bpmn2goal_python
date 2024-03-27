@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "bpmn2goal-python"
+version = "1.0.0"
+description = "A porting of CNR's bpmn2goal in Python"
+authors = ["zetaemme <mattia.zorzan@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pyparsing = "^3.1.2"
+sympy = "^1.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

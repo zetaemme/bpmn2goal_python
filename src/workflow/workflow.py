@@ -78,6 +78,7 @@ class MessageFlow(Flow, ABC):
     id: str
 
 
+@dataclass
 class BoundaryFlow(Flow):
     id: str
     source: "Task"
@@ -166,4 +167,4 @@ class Task(Item):
     id: str
     label: str
     task_type: str
-    message: Optional[str] = None
+    message: Optional[Message] = None

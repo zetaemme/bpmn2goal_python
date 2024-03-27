@@ -6,6 +6,14 @@ from xml.etree.ElementTree import Element, ElementTree, parse
 from src.fol import Parser
 from src.workflow import *
 
+NAMESPACES = {
+    "": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "omgdi": "http://www.omg.org/spec/DD/20100524/DI",
+    "omgdc": "http://www.omg.org/spec/DD/20100524/DC",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+}
+
 
 @dataclass
 class BpmnLoader:
@@ -35,51 +43,106 @@ class BpmnLoader:
         if "definitions" not in root.tag:
             return None
 
-        self.datatypes = self.parse_items(root.findall(".//dataObject"))
-        self.messages = self.parse_messages(root.findall(".//message"))
+        self.datatypes = self.parse_items(root.findall(".//dataObject", NAMESPACES))
+        self.messages = self.parse_messages(root.findall(".//message", NAMESPACES))
         self.data_objects = self.parse_data_objects(
-            root.findall(".//dataObjectReference")
-        ) + self.parse_data_store(
-            root.findall(".//dataStore")
-        )
-        self.signals = self.parse_signal(root.findall(".//signal"))
+            root.findall(".//dataObjectReference", NAMESPACES)
+        ) + self.parse_data_store(root.findall(".//dataStore", NAMESPACES))
+        self.signals = self.parse_signal(root.findall(".//signal", NAMESPACES))
 
         self.data = self.datatypes + self.messages + self.data_objects + self.signals
 
-        items_tasks = self.parse_tasks(root.findall(".//task"), "task")
-        items_receive_tasks = self.parse_tasks(root.findall(".//receiveTask"), "receive")
-        items_send_tasks = self.parse_tasks(root.findall(".//sendTask"), "send")
-        items_user_tasks = self.parse_tasks(root.findall(".//userTask"), "user")
-        items_manual_tasks = self.parse_tasks(root.findall(".//manualTask"), "user")
-        items_service_tasks = self.parse_tasks(root.findall(".//serviceTask"), "services")
-        items_script_tasks = self.parse_tasks(root.findall(".//scriptTask"), "script")
+        items_tasks = self.parse_tasks(root.findall(".//task", NAMESPACES), "task")
+        items_receive_tasks = self.parse_tasks(
+            root.findall(".//receiveTask", NAMESPACES), "receive"
+        )
+        items_send_tasks = self.parse_tasks(
+            root.findall(".//sendTask", NAMESPACES), "send"
+        )
+        items_user_tasks = self.parse_tasks(
+            root.findall(".//userTask", NAMESPACES), "user"
+        )
+        items_manual_tasks = self.parse_tasks(
+            root.findall(".//manualTask", NAMESPACES), "user"
+        )
+        items_service_tasks = self.parse_tasks(
+            root.findall(".//serviceTask", NAMESPACES), "services"
+        )
+        items_script_tasks = self.parse_tasks(
+            root.findall(".//scriptTask", NAMESPACES), "script"
+        )
 
-        event_start = self.parse_event(root.findall(".//startEvent"), "start")
-        event_end = self.parse_event(root.findall(".//endEvent"), "start")
-        event_boundary = self.parse_event(root.findall(".//boundaryEvent"), "boundary")
-        intermediate = self.parse_event(root.findall(".//intermediateCatchEvent"), "interm_catch")
+        event_start = self.parse_event(
+            root.findall(".//startEvent", NAMESPACES), "start"
+        )
+        event_end = self.parse_event(root.findall(".//endEvent", NAMESPACES), "start")
+        event_boundary = self.parse_event(
+            root.findall(".//boundaryEvent", NAMESPACES), "boundary"
+        )
+        intermediate = self.parse_event(
+            root.findall(".//intermediateCatchEvent", NAMESPACES), "interm_catch"
+        )
 
-        exclusive_gateways = self.parse_gateway(root.findall(".//exclusiveGateway"), "exclusive")
-        inclusive_gateways = self.parse_gateway(root.findall(".//inclusiveGateway"), "inclusive")
-        parallel_gateways = self.parse_gateway(root.findall(".//parallelGateway"), "parallel")
+        exclusive_gateways = self.parse_gateway(
+            root.findall(".//exclusiveGateway", NAMESPACES), "exclusive"
+        )
+        inclusive_gateways = self.parse_gateway(
+            root.findall(".//inclusiveGateway", NAMESPACES), "inclusive"
+        )
+        parallel_gateways = self.parse_gateway(
+            root.findall(".//parallelGateway", NAMESPACES), "parallel"
+        )
 
-        self.items = items_tasks + items_receive_tasks + items_send_tasks + items_user_tasks + items_manual_tasks + \
-                     items_service_tasks + items_script_tasks + event_start + event_end + event_boundary + \
-                     intermediate + exclusive_gateways + inclusive_gateways + parallel_gateways
+        self.items = (
+            items_tasks
+            + items_receive_tasks
+            + items_send_tasks
+            + items_user_tasks
+            + items_manual_tasks
+            + items_service_tasks
+            + items_script_tasks
+            + event_start
+            + event_end
+            + event_boundary
+            + intermediate
+            + exclusive_gateways
+            + inclusive_gateways
+            + parallel_gateways
+        )
 
-        sequence_flows = self.parse_sequence_flows(root.findall(".//sequenceFlow"))
-        message_flows = self.parse_message_flows(root.findall(".//messageFlow"))
+        sequence_flows = self.parse_sequence_flows(
+            root.findall(".//sequenceFlow", NAMESPACES)
+        )
+        message_flows = self.parse_message_flows(
+            root.findall(".//messageFlow", NAMESPACES)
+        )
         data_input_flows = self.parse_data_input_flows(
-            root.findall(".//task") + root.findall(".//receiveTask") + root.findall(".//sendTask") +
-            root.findall(".//userTask") + root.findall(".//manualTask") + root.findall(".//serviceTask")
+            root.findall(".//task", NAMESPACES)
+            + root.findall(".//receiveTask", NAMESPACES)
+            + root.findall(".//sendTask", NAMESPACES)
+            + root.findall(".//userTask", NAMESPACES)
+            + root.findall(".//manualTask", NAMESPACES)
+            + root.findall(".//serviceTask", NAMESPACES)
         )
         data_output_flows = self.parse_data_output_flows(
-            root.findall(".//task") + root.findall(".//receiveTask") + root.findall(".//sendTask") +
-            root.findall(".//userTask") + root.findall(".//manualTask") + root.findall(".//serviceTask")
+            root.findall(".//task")
+            + root.findall(".//receiveTask", NAMESPACES)
+            + root.findall(".//sendTask", NAMESPACES)
+            + root.findall(".//userTask")
+            + root.findall(".//manualTask", NAMESPACES)
+            + root.findall(".//serviceTask", NAMESPACES)
         )
-        boundary_flows = self.parse_boundary_flows(root.findall(".//boundaryEvent"))
+        boundary_flows = self.parse_boundary_flows(
+            root.findall(".//boundaryEvent", NAMESPACES)
+        )
 
-        self.flows = sequence_flows + message_flows + data_input_flows + data_output_flows + boundary_flows
+        self.flows = (
+            sequence_flows
+            + message_flows
+            + data_input_flows
+            + data_output_flows
+            + boundary_flows
+        )
 
         return Workflow(self.datatypes, self.items, self.flows, self.data)
 
@@ -95,11 +158,11 @@ class BpmnLoader:
         for item in reversed(items):
             id = item.get("id")
             ref = item.get("dataObjectRef")
-            stage_tag = item.find(".//dataState")
+            stage_tag = item.find(".//dataState", NAMESPACES)
 
             data_type = self.search_datatype_by_id(ref)
             if data_type is not None:
-                if len(stage_tag) > 0:
+                if stage_tag is not None and len(stage_tag) > 0:
                     refs.append(DataObjectRef(id, data_type, stage_tag[0].get("name")))
                 else:
                     refs.append(DataObjectRef(id, data_type, None))
@@ -108,7 +171,9 @@ class BpmnLoader:
 
     def parse_data_store(self, items: list[Element]) -> list[DataObjectRef]:
         return [
-            DataObjectRef(item.get("id"), DataType(item.get("id"), item.get("name")), None)
+            DataObjectRef(
+                item.get("id"), DataType(item.get("id"), item.get("name")), None
+            )
             for item in reversed(items)
         ]
 
@@ -138,12 +203,30 @@ class BpmnLoader:
             id = item.get("id")
             label = item.get("name")
 
-            message_id = item.find(".//messageEventDefinition").get("messageRef")
-            signal_id = item.find(".//signalEventDefinition").get("signalRef")
+            message_event_definition = item.find(
+                ".//messageEventDefinition", NAMESPACES
+            )
+            message_id = (
+                message_event_definition.get("messageRef")
+                if message_event_definition is not None
+                else None
+            )
 
-            duration = item.find(".//timeDuration").text
-            time_date = item.find(".//timeDate").text
-            repetition = item.find(".//timeCycle").text
+            signal_event_definition = item.find(".//signalEventDefinition", NAMESPACES)
+            signal_id = (
+                signal_event_definition.get("signalRef")
+                if signal_event_definition is not None
+                else None
+            )
+
+            time_duration = item.find(".//timeDuration", NAMESPACES)
+            duration = time_duration.text if time_duration is not None else None
+
+            time_date = item.find(".//timeDate", NAMESPACES)
+            time = time_date.text if time_date is not None else None
+
+            time_cycle = item.find(".//timeCycle", NAMESPACES)
+            repetition = time_cycle.text if time_cycle is not None else None
 
             if message_id is not None:
                 message = self.search_message_by_id(message_id)
@@ -152,11 +235,21 @@ class BpmnLoader:
                 signal = self.search_signal_by_id(signal_id)
                 events.append(Event(id, label, tag, SignalEventDefinition(signal)))
             elif duration is not None:
-                events.append(Event(id, label, tag, TimerEventDefinition("duration", duration)))
-            elif time_date is not None:
-                events.append(Event(id, label, tag, TimerEventDefinition("time_date", time_date)))
+                events.append(
+                    Event(id, label, tag, TimerEventDefinition("duration", duration))
+                )
+            elif time is not None:
+                events.append(
+                    Event(id, label, tag, TimerEventDefinition("time_date", time))
+                )
             elif repetition is not None:
-                events.append(Event(id, label, tag, TimerEventDefinition("repetition", repetition)))
+                events.append(
+                    Event(
+                        id, label, tag, TimerEventDefinition("repetition", repetition)
+                    )
+                )
+            else:
+                events.append(Event(id, label, tag, EmptyEventDefinition()))
 
         return events
 
@@ -173,8 +266,8 @@ class BpmnLoader:
         return gateways
 
     def parse_gateway_direction(self, item: Element) -> GatewayDirection:
-        ins = item.findall(".//incoming")
-        outs = item.findall(".//outgoing")
+        ins = item.findall(".//incoming", NAMESPACES)
+        outs = item.findall(".//outgoing", NAMESPACES)
 
         if len(ins) == 1:
             return Diverging()
@@ -194,9 +287,9 @@ class BpmnLoader:
             start = self.search_item_by_id(source)
             end = self.search_item_by_id(target)
 
-            condition_tags = item.find(".//conditionExpression")
+            condition_tags = item.find(".//conditionExpression", NAMESPACES)
             opt_condition = None
-            if len(condition_tags) > 0:
+            if condition_tags is not None and len(condition_tags) > 0:
                 parser = Parser()
                 parse_result = parser.parse(condition_tags.text)
 
@@ -233,7 +326,7 @@ class BpmnLoader:
         for item in reversed(items):
             task = self.search_item_by_id(item.get("id"))
 
-            data_inputs = item.findall(".//dataInputAssociation")
+            data_inputs = item.findall(".//dataInputAssociation", NAMESPACES)
             for data_input in data_inputs:
                 if data_input is not None:
                     id = data_input.get("id")
@@ -251,7 +344,7 @@ class BpmnLoader:
         for item in reversed(items):
             task = self.search_item_by_id(item.get("id"))
 
-            data_inputs = item.findall(".//dataInputAssociation")
+            data_inputs = item.findall(".//dataInputAssociation", NAMESPACES)
             for data_input in data_inputs:
                 if data_input is not None:
                     id = data_input.get("id")
