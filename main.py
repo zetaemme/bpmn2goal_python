@@ -1,14 +1,21 @@
+from argparse import ArgumentParser, Namespace
+
 from src.bpmn_loader import BpmnLoader
 from src.workflow import Task, WorkflowState
 
 
+def parse_args() -> Namespace:
+    parser = ArgumentParser(description="Extracts the goals, preconditions, and postconditions of a BPMN workflow")
+    parser.add_argument("--bpmn", type=str, help="Path to the BPMN file")
+
+    return parser.parse_args()
+
+
 def main() -> None:
-    pass
+    args = parse_args()
 
-
-if __name__ == "__main__":
     loader = BpmnLoader()
-    loader.load("data/lims.bpmn")
+    loader.load(args.bpmn)
 
     workflow = loader.extract_workflow()
 
@@ -37,3 +44,7 @@ if __name__ == "__main__":
                 result += f"{item.label.replace('\n', ' ')} [PRE: {precondition_str}, POST: {postcondition_str}]\n"
 
         print(result)
+
+
+if __name__ == "__main__":
+    main()
